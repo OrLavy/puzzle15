@@ -1,27 +1,25 @@
 import React from 'react';
 
-import Button from 'react-bootstrap/Button';
-
 import GameGrid from '../gameGrid/gameGrid';
 import GameBlock from "../../models/gameBlock";
 
 const gameBlocks: GameBlock[] = [
-  { blockValue: 1 },
-  { blockValue: 2 },
-  { blockValue: 3 },
-  { blockValue: 4 },
-  { blockValue: 5 },
-  { blockValue: 6 },
-  { blockValue: 7 },
-  { blockValue: 8 },
-  { blockValue: 9 },
-  { blockValue: 10 },
-  { blockValue: 11 },
-  { blockValue: 12 },
-  { blockValue: 13 },
-  { blockValue: 14 },
-  { blockValue: 15 },
-  { blockValue: 16 },
+  { blockValue: 1, isEmptyBLock: false, isInCorrectPosition: false },
+  { blockValue: 2, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 3, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 4, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 5, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 6, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 7, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 8, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 9, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 10, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 11, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 12, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 13, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 14, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 15, isEmptyBLock: false, isInCorrectPosition: false  },
+  { blockValue: 16, isEmptyBLock: false, isInCorrectPosition: false  },
 ];
 
 const Game : React.FC = () => {

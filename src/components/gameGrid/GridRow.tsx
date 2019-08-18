@@ -13,7 +13,10 @@ const GridRow : React.FC<GridRowProps> = (props) => {
   const { blocks } = props;
 
   const gridSquares = useMemo(() => {
-    return blocks.map(gameBlock => <GridSquare key= {gameBlock.blockValue} value={gameBlock.blockValue}/>)
+    // Maps to a grid square or an empty block (represented by null)
+    return blocks.map(gameBlock => ( gameBlock.isEmptyBLock ?
+      null :
+      <GridSquare key= {gameBlock.blockValue} value={gameBlock.blockValue} isInCorrectPosition={gameBlock.isInCorrectPosition}/>))
   }, [blocks]);
 
   return (
