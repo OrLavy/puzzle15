@@ -2,11 +2,12 @@ import React from 'react';
 
 import Button from 'react-bootstrap/Button';
 
+import GameGrid from '../gameGrid/gameGrid';
 
 const Game : React.FC = () => {
   return (
     <div>
-      <Button>This is a game board</Button>
+      <GameGrid gridSize={4} />
     </div>
 );
 };

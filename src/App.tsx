@@ -15,7 +15,10 @@ const App: React.FC = () => {
       <Row className="justify-content-md-center">
         <Col md={{ offset: 4 }}> <GameControllers /> </Col>
       </Row>
-      <Row className="justify-content-md-center">
+      <Row>
+        <br/>
+      </Row>
+      <Row >
         <Col md={{ offset: 4 }}> <Game /> </Col>
       </Row>
     </Container>
