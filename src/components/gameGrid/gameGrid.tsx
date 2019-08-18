@@ -1,42 +1,36 @@
 import React from 'react';
+import chunk from 'lodash/chunk';
 
-import Button from 'react-bootstrap/Button';
+import GridRow from './GridRow';
+import GameBlock from "../../models/gameBlock";
 
-import BoardSquare from '../boardSquare/boardSquare';
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+const { useMemo } = React;
 
 type Props = {
   gridSize: number,
+  gameBlocks: GameBlock[],
 };
 
+
+
 const GameGrid : React.FC<Props> = (props) => {
+  const { gridSize, gameBlocks } = props;
+
+  const blocksByRows = useMemo(() => {
+    return chunk(gameBlocks, gridSize);
+  }, [gridSize, gameBlocks]);
+
+  const gridRows = useMemo(() => {
+    return blocksByRows.map(blockForRow => <GridRow blocks={blockForRow}/>)
+  }, [blocksByRows]);
+
+  for (let row = 0; row < gridSize; row++) {
+
+  }
+
   return (
     <div>
-      <Row>
-        <BoardSquare value={1}/>
-        <BoardSquare value={2}/>
-        <BoardSquare value={3}/>
-        <BoardSquare value={4}/>
-      </Row>
-      <Row>
-        <BoardSquare value={5}/>
-        <BoardSquare value={6}/>
-        <BoardSquare value={7}/>
-        <BoardSquare value={8}/>
-      </Row>
-      <Row>
-        <BoardSquare value={9}/>
-        <BoardSquare value={10}/>
-        <BoardSquare value={11}/>
-        <BoardSquare value={12}/>
-      </Row>
-      <Row>
-        <BoardSquare value={13}/>
-        <BoardSquare value={14}/>
-        <BoardSquare value={15}/>
-        <BoardSquare value={16}/>
-      </Row>
+      {gridRows}
     </div>
   );
 };

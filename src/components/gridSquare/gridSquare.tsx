@@ -6,7 +6,7 @@ type Props = {
   value: number|string,
 };
 
-const BoardSquare : React.FC<Props> = (props) => {
+const GridSquare : React.FC<Props> = (props) => {
   const { value } = props;
 
   return (
@@ -14,4 +14,4 @@ const BoardSquare : React.FC<Props> = (props) => {
   );
 };
 
-export default React.memo(BoardSquare);
+export default React.memo(GridSquare);
