@@ -2,7 +2,7 @@ import React from 'react';
 
 import GameGrid from '../gameGrid/gameGrid';
 import GameBlock from "../../models/gameBlock";
-import GameControllers from "../gameControllers/gameControllers";
+import GameControllers from "./gameControllers/gameControllers";
 
 const gameBlocks: GameBlock[] = [
   { blockValue: 1, isEmptyBLock: false, isInCorrectPosition: false },

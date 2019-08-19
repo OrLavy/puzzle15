@@ -1,6 +1,6 @@
 import GameBlock from "../../models/gameBlock";
 import React from "react";
-import GridSquare from "../gridSquare/gridSquare";
+import GridSquare from "./gridSquare/gridSquare";
 import Row from "react-bootstrap/Row";
 
 const { useMemo } = React;
