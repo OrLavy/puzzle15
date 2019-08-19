@@ -1,24 +1,34 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 
 import Button from 'react-bootstrap/Button';
+import GridLocation from "../../../models/gridLocation";
 
 type Props = {
-  squareId: number,
+  rowIndex: number,
+  colIndex: number,
   displayValue: number|string,
   isInCorrectPosition: boolean,
-  onClick: (blockId: number) => void,
+  onClick: (gridLocation: GridLocation) => void,
 };
 
 const GridSquare : React.FC<Props> = (props) => {
   const {
-    squareId,
+    rowIndex, colIndex,
     displayValue,
     isInCorrectPosition,
     onClick
   } = props;
 
-  // Memoize the callback
-  const onSquareClick = useCallback(() => onClick(squareId), [onClick, squareId]);
+  // Memoize the square's grid location + onclick callback
+  const gridLocation = useMemo<GridLocation>(() => {
+    const gridLocation : GridLocation = {
+      row: rowIndex,
+      col: colIndex,
+    };
+
+    return gridLocation;
+  }, [rowIndex, colIndex]);
+  const onSquareClick = useCallback(() => onClick(gridLocation), [gridLocation]);
 
   // Bootstrap variant
   const variant = isInCorrectPosition ? "success" : "outline-secondary";

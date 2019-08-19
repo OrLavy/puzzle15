@@ -1,36 +1,28 @@
 import React from 'react';
-import chunk from 'lodash/chunk';
 
 import GridRow from './GridRow';
 import GameBlock from "../../models/gameBlock";
+import GridLocation from "../../models/gridLocation";
 
 const { useMemo } = React;
 
 type Props = {
-  // Technical data
-  gridSize: number,
-
   // Live data props
-  gameBlocks: GameBlock[],
+  gameBlocksGrid: GameBlock[][],
 
   // Event Handlers
-  onBlockPress: (blockId: number) => void,
+  onBlockPress: (gridLocation: GridLocation) => void,
 };
 
 const GameGrid : React.FC<Props> = (props) => {
-  const { gridSize, gameBlocks, onBlockPress } = props;
+  const { gameBlocksGrid, onBlockPress } = props;
 
-  const blocksByRows = useMemo(() => {
-    return chunk(gameBlocks, gridSize);
-  }, [gridSize, gameBlocks]);
-
+  // Memoize the grid rows
   const gridRows = useMemo(() => {
-    return blocksByRows.map((blockForRow, index) => <GridRow blocks={blockForRow} onBlockPress={onBlockPress} />)
-  }, [blocksByRows, onBlockPress]);
-
-  for (let row = 0; row < gridSize; row++) {
-
-  }
+    // NOTE : We can safely use "index as key" because the order of the rows will not change. nor will rows will be added/removed.
+    //        Otherwise we would have used a more complex key.
+    return gameBlocksGrid.map((blockForRow, index) => <GridRow key={index} rowIndex={index} blocks={blockForRow} onBlockPress={onBlockPress} />)
+  }, [gameBlocksGrid, onBlockPress]);
 
   return (
     <div>
