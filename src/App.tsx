@@ -70,11 +70,13 @@ const App: React.FC = () => {
 function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockLocation: GridLocation, blockToMove: GridLocation) : GameBlocksGrid {
   // Ensure that the block can be moved
   if (areBlocksNeighbours(emptyBlockLocation, blockToMove)) {
+
     // Calculates the game block grid after the blocks switch
     const updatedGameBlockGrid = switchBetweenBlocksInGrid(gameBlockGrid, emptyBlockLocation, blockToMove);
 
     return updatedGameBlockGrid;
   } else {
+    console.log(`${JSON.stringify(emptyBlockLocation)} and ${JSON.stringify(blockToMove)} are not neighbours`);
     return gameBlockGrid;
   }
 }
@@ -88,7 +90,11 @@ function areBlocksNeighbours(locationA: GridLocation, locationB: GridLocation) :
   const absRowDif = Math.abs(locationA.row - locationB.row);
   const absColDif = Math.abs(locationA.col - locationB.col);
 
-  return ((absRowDif < 1) && (absColDif < 1))
+  // Check for both types of allowed neighbours
+  const sameColNeighbours = (absColDif === 0) && (absRowDif === 1);
+  const sameRowNeighbours = (absRowDif === 0) && (absColDif === 1);
+
+  return sameColNeighbours || sameRowNeighbours;
 }
 
 /**
@@ -102,6 +108,8 @@ function switchBetweenBlocksInGrid(gameBlockGrid: GameBlock[][], blockA: GridLoc
     // NOTE : In real life will have a proper error handling (logs + ui display)
     alert(`Illegal block-switch request between ${JSON.stringify(blockA)} and ${JSON.stringify(blockB)}`)
   } else {
+    console.log(`Moving block ${JSON.stringify(blockA)} to ${JSON.stringify(blockB)}`);
+
     // Are we switching blocks in the same row ?
     if (blockA.row === blockB.row) {
       const rowIndex = blockA.row;
