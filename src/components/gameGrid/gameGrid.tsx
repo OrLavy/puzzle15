@@ -1,14 +1,14 @@
 import React from 'react';
 
 import GridRow from './GridRow';
-import GameBlock from "../../models/gameBlock";
 import GridLocation from "../../models/gridLocation";
+import GameBlocksGrid from "../../models/gameBlocksGrid";
 
 const { useMemo } = React;
 
 type Props = {
   // Live data props
-  gameBlocksGrid: GameBlock[][],
+  gameBlocksGrid: GameBlocksGrid,
 
   // Event Handlers
   onBlockPress: (gridLocation: GridLocation) => void,

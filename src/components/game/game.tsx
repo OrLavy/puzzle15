@@ -1,12 +1,12 @@
 import React from 'react';
 
 import GameGrid from '../gameGrid/gameGrid';
-import GameBlock from "../../models/gameBlock";
 import GameControllers from "./gameControllers/gameControllers";
 import GridLocation from "../../models/gridLocation";
+import GameBlocksGrid from "../../models/gameBlocksGrid";
 
 type Props = {
-  gameBlocksGrid: GameBlock[][],
+  gameBlocksGrid: GameBlocksGrid,
   onGameBlockPressed: (gridLocation: GridLocation) => void,
 }
 
