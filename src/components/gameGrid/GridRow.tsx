@@ -7,17 +7,27 @@ const { useMemo } = React;
 
 type GridRowProps = {
   blocks: GameBlock[],
+  onBlockPress: (blockId: number) => void,
 }
 
 const GridRow : React.FC<GridRowProps> = (props) => {
-  const { blocks } = props;
+  const {
+    blocks,
+    onBlockPress
+  } = props;
 
   const gridSquares = useMemo(() => {
     // Maps to a grid square or an empty block (represented by null)
     return blocks.map(gameBlock => ( gameBlock.isEmptyBLock ?
       null :
-      <GridSquare key= {gameBlock.blockValue} value={gameBlock.blockValue} isInCorrectPosition={gameBlock.isInCorrectPosition}/>))
-  }, [blocks]);
+      <GridSquare
+        key= {gameBlock.blockValue}
+        squareId={gameBlock.blockId}
+        displayValue={gameBlock.blockValue}
+        isInCorrectPosition={gameBlock.isInCorrectPosition}
+        onClick={onBlockPress}
+      />))
+  }, [blocks, onBlockPress]);
 
   return (
     <Row>
