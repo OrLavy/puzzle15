@@ -2,6 +2,7 @@ import React from 'react';
 
 import GameGrid from '../gameGrid/gameGrid';
 import GameBlock from "../../models/gameBlock";
+import GameControllers from "../gameControllers/gameControllers";
 
 const gameBlocks: GameBlock[] = [
   { blockValue: 1, isEmptyBLock: false, isInCorrectPosition: false },
@@ -25,6 +26,8 @@ const gameBlocks: GameBlock[] = [
 const Game : React.FC = () => {
   return (
     <div>
+      <GameControllers />
+      <br/>
       <GameGrid gridSize={4} gameBlocks={gameBlocks} />
     </div>
 );
