@@ -28,7 +28,7 @@ const GridSquare : React.FC<Props> = (props) => {
 
     return gridLocation;
   }, [rowIndex, colIndex]);
-  const onSquareClick = useCallback(() => onClick(gridLocation), [gridLocation]);
+  const onSquareClick = useCallback(() => onClick(gridLocation), [gridLocation, onClick]);
 
   // Bootstrap variant
   const variant = isInCorrectPosition ? "success" : "outline-secondary";

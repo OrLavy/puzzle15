@@ -14,6 +14,10 @@ type Props = {
   onBlockPress: (gridLocation: GridLocation) => void,
 };
 
+// Note : Intentionally allowing for any shape of grid (as long as it row-based)
+//        This allows the 'GameGrid' and all lower level component to be as "dumb" as possible
+//        while keeping the actual logic at the top level.
+
 const GameGrid : React.FC<Props> = (props) => {
   const { gameBlocksGrid, onBlockPress } = props;
 
