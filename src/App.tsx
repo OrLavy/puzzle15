@@ -49,8 +49,14 @@ const App: React.FC = () => {
     // Calculate the new game blocks grid after the move
     const newGameBlockGrid = performMoveIfValid(gameBlocksGrid, emptyBlockLocation, gameBlockToMove);
 
-    // Sets the new (or unmodified - in that case, no re-render will occur) game blocks grid
-    setGameBlocksGrid(newGameBlockGrid);
+    console.log(newGameBlockGrid);
+
+    if (newGameBlockGrid) {
+      // Sets the new (or unmodified - in that case, no re-render will occur) game blocks grid
+      setGameBlocksGrid(newGameBlockGrid);
+      setEmptyBlockLocation(gameBlockToMove);
+    }
+
   }, [gameBlocksGrid, emptyBlockLocation, setGameBlocksGrid]);
 
   return (
@@ -67,7 +73,7 @@ const App: React.FC = () => {
   );
 };
 
-function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockLocation: GridLocation, blockToMove: GridLocation) : GameBlocksGrid {
+function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockLocation: GridLocation, blockToMove: GridLocation) : GameBlocksGrid|null {
   // Ensure that the block can be moved
   if (areBlocksNeighbours(emptyBlockLocation, blockToMove)) {
 
@@ -77,7 +83,7 @@ function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockLocation: Gr
     return updatedGameBlockGrid;
   } else {
     console.log(`${JSON.stringify(emptyBlockLocation)} and ${JSON.stringify(blockToMove)} are not neighbours`);
-    return gameBlockGrid;
+    return null;
   }
 }
 
@@ -129,7 +135,23 @@ function switchBetweenBlocksInGrid(gameBlockGrid: GameBlock[][], blockA: GridLoc
 function switchBetweenBlocksInTheSameRow(gameBlockGrid: GameBlock[][], row: number, colA: number, colB: number) : GameBlocksGrid{
   // NOTE : Can add another validity check here, skipping it for simplicity
   // TODO : ORL : Implement
-  return gameBlockGrid;
+  // Shallow copy all rows
+  const updatedGameBlockGRid = [...gameBlockGrid];
+
+  // Shallow copy affected row content
+  updatedGameBlockGRid[row] = [...gameBlockGrid[row]];
+
+  // switch between the blocks
+  const affectedRow = updatedGameBlockGRid[row];
+  const blockA = affectedRow[colA];
+  const blockB = affectedRow[colB];
+  affectedRow[colA] = blockB;
+  affectedRow[colB] = blockA;
+
+  console.log('Original row:', gameBlockGrid[row]);
+  console.log('New row:', affectedRow);
+
+  return updatedGameBlockGRid;
 }
 
 /**
