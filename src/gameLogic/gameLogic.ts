@@ -59,7 +59,7 @@ function buildInitialSquareGameBoardState(gridSize: number) : { initialGameBlock
 /**
  * Performs the move on the given grid if it is valid.
  */
-function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockGridLocation: GridLocation, blockToMoveGridLocation: GridLocation) : GameBlocksGrid | null {
+function performGameMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockGridLocation: GridLocation, blockToMoveGridLocation: GridLocation) : GameBlocksGrid | null {
   // Ensure that the block can be moved
   if (areBlocksNeighbours(emptyBlockGridLocation, blockToMoveGridLocation)) {
 
@@ -77,5 +77,5 @@ function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockGridLocation
 
 export {
   buildInitialSquareGameBoardState,
-  performMoveIfValid,
+  performGameMoveIfValid,
 }

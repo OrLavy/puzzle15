@@ -1,4 +1,6 @@
-import React, {useCallback, useState} from 'react';
+import React from 'react';
+import { connect } from 'react-redux'
+
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -6,29 +8,29 @@ import Col from "react-bootstrap/Col";
 import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
 
+import RootState from './store/root-state';
+
 import Game from './components/game/game';
-import GridLocation from "./models/gridLocation";
-import { buildInitialSquareGameBoardState, performMoveIfValid } from "./gameLogic/gameLogic";
-import { MATRIX_SIZE } from "./gameLogic/gameConstants";
 
-const { initialGameBlocksGrid, initialEmptyBlockLocation } = buildInitialSquareGameBoardState(MATRIX_SIZE);
+import { performMoveIfValid } from './redux/game/game_actions';
 
-const App: React.FC = () => {
-  const [emptyBlockLocation, setEmptyBlockLocation] = useState(initialEmptyBlockLocation);
-  const [gameBlocksGrid, setGameBlocksGrid] = useState(initialGameBlocksGrid);
+const mapStateToProps = (state: RootState) => {
+  return {
+    gameBlocksGrid: state.game.gameBlocksGrid,
+  }
+};
 
-  // Memoize the callback for pressing a "game block" (Will later be change into a proper redux action).
-  const performMoveOnClick = useCallback((gameBlockToMove: GridLocation) => {
-    // Calculate the new game blocks grid after the move
-    const newGameBlockGrid = performMoveIfValid(gameBlocksGrid, emptyBlockLocation, gameBlockToMove);
+const mapDispatchToProps = {
+  performMoveIfValid: performMoveIfValid,
+};
 
-    if (newGameBlockGrid) {
-      // Sets the new (or unmodified - in that case, no re-render will occur) game blocks grid
-      setGameBlocksGrid(newGameBlockGrid);
-      setEmptyBlockLocation(gameBlockToMove);
-    }
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-  }, [gameBlocksGrid, emptyBlockLocation, setGameBlocksGrid]);
+const App: React.FC<Props> = (props) => {
+  const {
+    gameBlocksGrid,
+    performMoveIfValid,
+  } = props;
 
   return (
     <Container>
@@ -36,7 +38,7 @@ const App: React.FC = () => {
         <Col>
           <Game
             gameBlocksGrid={gameBlocksGrid}
-            onGameBlockPressed={performMoveOnClick}
+            onGameBlockPressed={performMoveIfValid}
           />
         </Col>
       </Row>
@@ -44,5 +46,7 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
