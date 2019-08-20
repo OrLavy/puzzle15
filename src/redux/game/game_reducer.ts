@@ -6,12 +6,14 @@ import { createReducer } from 'redux-starter-kit';
 
 import { GameState, defaultGameState } from './game_state';
 import * as gameActions from './game_actions';
-import {performGameMoveIfValid} from "../../gameLogic/gameLogic";
+import {buildInitialSquareGameBoardState, performGameMoveIfValid} from "../../gameLogic/gameLogic";
+import {MATRIX_SIZE} from "../../gameLogic/gameConstants";
 
 type draftState = Draft<GameState>;
 
 export const GameReducer = createReducer<GameState>(defaultGameState, {
   [getType(gameActions.performMoveIfValid)]: performMoveIfValidHandler,
+  [getType(gameActions.setToSolvedPosition)]: setToSolvedPositionHandler,
 });
 
 
@@ -33,4 +35,17 @@ function performMoveIfValidHandler(state: draftState, action: ReturnType<typeof 
     // If the move was valid, the empty block now sits in the location of the moved block
     state.emptyBlockLocation = blockToMoveGridLocation;
   }
+}
+
+function setToSolvedPositionHandler(state: draftState, action: ReturnType<typeof gameActions.performMoveIfValid>) {
+  const { initialGameBlocksGrid, initialEmptyBlockLocation } = buildInitialSquareGameBoardState(MATRIX_SIZE);
+
+  // Important note:  We can 'directly mutate the state' (actually mutating a draft of the original state)
+  //                  because we are using the 'immer' library.
+
+  // Sets the new game blocks grid
+  state.gameBlocksGrid = initialGameBlocksGrid;
+
+  // If the move was valid, the empty block now sits in the location of the moved block
+  state.emptyBlockLocation = initialEmptyBlockLocation;
 }

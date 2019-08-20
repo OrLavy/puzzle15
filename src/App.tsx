@@ -12,7 +12,7 @@ import RootState from './store/root-state';
 
 import Game from './components/game/game';
 
-import { performMoveIfValid } from './redux/game/game_actions';
+import { performMoveIfValid, setToSolvedPosition } from './redux/game/game_actions';
 import GridLocation from "./models/gridLocation";
 
 const mapStateToProps = (state: RootState) => {
@@ -23,6 +23,7 @@ const mapStateToProps = (state: RootState) => {
 
 const mapDispatchToProps = {
   performMoveIfValid: performMoveIfValid,
+  returnToStartingPosition: setToSolvedPosition,
 };
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
@@ -31,6 +32,7 @@ const App: React.FC<Props> = React.memo((props) => {
   const {
     gameBlocksGrid,
     performMoveIfValid,
+    returnToStartingPosition,
   } = props;
 
   const memoPerformMoveIfValid = useCallback((gridLocation: GridLocation) => {
@@ -44,6 +46,7 @@ const App: React.FC<Props> = React.memo((props) => {
           <Game
             gameBlocksGrid={gameBlocksGrid}
             onGameBlockPressed={memoPerformMoveIfValid}
+            setToSolvedGame={returnToStartingPosition}
           />
         </Col>
       </Row>
