@@ -17,7 +17,7 @@ export const GameReducer = createReducer<GameState>(defaultGameState, {
 
 function performMoveIfValidHandler(state: draftState, action: ReturnType<typeof gameActions.performMoveIfValid>) {
   // Extract the block that we want to move from the payload
-  const blockToMoveGridLocation = action.payload;
+  const { blockToMoveGridLocation } = action.payload;
 
   // Calculate the new game blocks grid after the move
   const newGameBlocksGrid = performGameMoveIfValid(state.gameBlocksGrid, state.emptyBlockLocation, blockToMoveGridLocation);

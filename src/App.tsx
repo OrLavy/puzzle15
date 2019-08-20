@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import { connect } from 'react-redux'
 
 import Container from "react-bootstrap/Container";
@@ -13,6 +13,7 @@ import RootState from './store/root-state';
 import Game from './components/game/game';
 
 import { performMoveIfValid } from './redux/game/game_actions';
+import GridLocation from "./models/gridLocation";
 
 const mapStateToProps = (state: RootState) => {
   return {
@@ -26,11 +27,15 @@ const mapDispatchToProps = {
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const App: React.FC<Props> = (props) => {
+const App: React.FC<Props> = React.memo((props) => {
   const {
     gameBlocksGrid,
     performMoveIfValid,
   } = props;
+
+  const memoPerformMoveIfValid = useCallback((gridLocation: GridLocation) => {
+    performMoveIfValid({ blockToMoveGridLocation: gridLocation });
+  }, [performMoveIfValid]);
 
   return (
     <Container>
@@ -38,13 +43,13 @@ const App: React.FC<Props> = (props) => {
         <Col>
           <Game
             gameBlocksGrid={gameBlocksGrid}
-            onGameBlockPressed={performMoveIfValid}
+            onGameBlockPressed={memoPerformMoveIfValid}
           />
         </Col>
       </Row>
     </Container>
   );
-};
+});
 
 export default connect(
   mapStateToProps,
