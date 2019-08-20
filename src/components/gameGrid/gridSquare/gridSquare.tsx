@@ -4,10 +4,15 @@ import Button from 'react-bootstrap/Button';
 import GridLocation from "../../../models/gridLocation";
 
 type Props = {
+  // Grid location props
   rowIndex: number,
   colIndex: number,
+
+  // Display props
   displayValue: number|string,
   isInCorrectPosition: boolean,
+
+  // Event Handlers
   onClick: (gridLocation: GridLocation) => void,
 };
 
@@ -32,6 +37,8 @@ const GridSquare : React.FC<Props> = (props) => {
 
   // Bootstrap variant
   const variant = isInCorrectPosition ? "success" : "outline-secondary";
+
+
 
   return (
     <Button

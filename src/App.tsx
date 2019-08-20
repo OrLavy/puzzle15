@@ -49,8 +49,6 @@ const App: React.FC = () => {
     // Calculate the new game blocks grid after the move
     const newGameBlockGrid = performMoveIfValid(gameBlocksGrid, emptyBlockLocation, gameBlockToMove);
 
-    console.log(newGameBlockGrid);
-
     if (newGameBlockGrid) {
       // Sets the new (or unmodified - in that case, no re-render will occur) game blocks grid
       setGameBlocksGrid(newGameBlockGrid);
@@ -73,7 +71,10 @@ const App: React.FC = () => {
   );
 };
 
-function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockLocation: GridLocation, blockToMove: GridLocation) : GameBlocksGrid|null {
+/**
+ * Performs the move on the given grid if it is valid.
+ */
+function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockLocation: GridLocation, blockToMove: GridLocation) : GameBlocksGrid | null {
   // Ensure that the block can be moved
   if (areBlocksNeighbours(emptyBlockLocation, blockToMove)) {
 
@@ -82,7 +83,6 @@ function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockLocation: Gr
 
     return updatedGameBlockGrid;
   } else {
-    console.log(`${JSON.stringify(emptyBlockLocation)} and ${JSON.stringify(blockToMove)} are not neighbours`);
     return null;
   }
 }
@@ -114,8 +114,6 @@ function switchBetweenBlocksInGrid(gameBlockGrid: GameBlock[][], blockA: GridLoc
     // NOTE : In real life will have a proper error handling (logs + ui display)
     alert(`Illegal block-switch request between ${JSON.stringify(blockA)} and ${JSON.stringify(blockB)}`)
   } else {
-    console.log(`Moving block ${JSON.stringify(blockA)} to ${JSON.stringify(blockB)}`);
-
     // Are we switching blocks in the same row ?
     if (blockA.row === blockB.row) {
       const rowIndex = blockA.row;
@@ -132,36 +130,60 @@ function switchBetweenBlocksInGrid(gameBlockGrid: GameBlock[][], blockA: GridLoc
 /**
  * Switches between the blocks by the given row and cols while keeping immutability for the effected and un-effected rows
  */
-function switchBetweenBlocksInTheSameRow(gameBlockGrid: GameBlock[][], row: number, colA: number, colB: number) : GameBlocksGrid{
+function switchBetweenBlocksInTheSameRow(gameBlocksGrid: GameBlock[][], row: number, colA: number, colB: number) : GameBlocksGrid{
   // NOTE : Can add another validity check here, skipping it for simplicity
-  // TODO : ORL : Implement
-  // Shallow copy all rows
-  const updatedGameBlockGRid = [...gameBlockGrid];
 
-  // Shallow copy affected row content
-  updatedGameBlockGRid[row] = [...gameBlockGrid[row]];
+  // Shallow copy all rows
+  const updatedGameBlocksGRid = cloneGameBlocksGrid(gameBlocksGrid, [row]);
 
   // switch between the blocks
-  const affectedRow = updatedGameBlockGRid[row];
-  const blockA = affectedRow[colA];
-  const blockB = affectedRow[colB];
-  affectedRow[colA] = blockB;
-  affectedRow[colB] = blockA;
+  switchBetweenCells(updatedGameBlocksGRid, { row, col: colA }, { row, col: colB });
 
-  console.log('Original row:', gameBlockGrid[row]);
-  console.log('New row:', affectedRow);
-
-  return updatedGameBlockGRid;
+  return updatedGameBlocksGRid;
 }
 
 /**
  * Switches between the blocks in the given col and rows while keeping immutability for the effected and un-effected rows
  */
-function switchBetweenBlocksInTheSameCol(gameBlockGrid: GameBlock[][], row: number, colA: number, colB: number) : GameBlocksGrid {
+function switchBetweenBlocksInTheSameCol(gameBlocksGrid: GameBlocksGrid, col: number, rowA: number, rowB: number) : GameBlocksGrid {
   // NOTE : Can add another validity check here, skipping it for simplicity
-  // TODO : ORL : Implement
-  return gameBlockGrid;
+
+  // Creates a clone for the given game board
+  const updatedGameBlocksGRid = cloneGameBlocksGrid(gameBlocksGrid, [rowA, rowB]);
+
+  // Switch between the cells
+  switchBetweenCells(updatedGameBlocksGRid, { row: rowA, col: col }, { row: rowB, col: col });
+
+  return updatedGameBlocksGRid;
 }
 
+/**
+ * Creates a shallow copy for the given game block grid rows, while also creating a shallow copy for the
+ * affected rows (while keeping the same reference for the unaffected rows)
+ */
+function cloneGameBlocksGrid(gameBlocksGrid: GameBlocksGrid, mutatedRowsIndexes : number[] = []) : GameBlocksGrid {
+  // Shallow copy all rows
+  const updatedGameBlockGRid = [...gameBlocksGrid];
+
+  // Shallow copy affected rows content
+  mutatedRowsIndexes.forEach(mutatedRowIndex => {
+    updatedGameBlockGRid[mutatedRowIndex] = [...gameBlocksGrid[mutatedRowIndex]];
+  });
+
+  return updatedGameBlockGRid;
+}
+
+/**
+ * Switches the cells with the given locations in the given GameBlocksGrid.
+ */
+function switchBetweenCells(gameBlocksGrid: GameBlocksGrid, locationA: GridLocation, locationB: GridLocation) : void {
+  // Get a reference for the cells
+  const celA = gameBlocksGrid[locationA.row][locationA.col];
+  const celB = gameBlocksGrid[locationB.row][locationB.col];
+
+  // Switch between the locations
+  gameBlocksGrid[locationA.row][locationA.col] = celB;
+  gameBlocksGrid[locationB.row][locationB.col] = celA;
+}
 
 export default App;

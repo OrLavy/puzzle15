@@ -1,14 +1,22 @@
-import GameBlock from "../../models/gameBlock";
 import React from "react";
-import GridSquare from "./gridSquare/gridSquare";
 import Row from "react-bootstrap/Row";
+
+import GridSquare from "./gridSquare/gridSquare";
+import EmptyGridSquare from "./gridSquare/emptyGridSquare";
+
+import GameBlock from "../../models/gameBlock";
 import GridLocation from "../../models/gridLocation";
 
 const { useMemo } = React;
 
 type GridRowProps = {
+  // Grid location props
   rowIndex: number,
+
+  // Data props
   blocks: GameBlock[],
+
+  // Event handlers
   onBlockPress: (gridLocation: GridLocation) => void,
 }
 
@@ -23,7 +31,10 @@ const GridRow : React.FC<GridRowProps> = (props) => {
   const gridSquares = useMemo(() => {
     // Maps to a grid square or an empty block (represented by null)
     return blocks.map((gameBlock, colIndex) => ( gameBlock.isEmptyBLock ?
-      null :
+      <EmptyGridSquare
+        // Key
+        key= {gameBlock.blockValue}
+      /> :
       <GridSquare
         // Key
         key= {gameBlock.blockValue}
