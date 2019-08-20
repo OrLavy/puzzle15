@@ -3,7 +3,6 @@
 import GameBlock, { cloneGameBlock } from "../models/gameBlock";
 import GridLocation from "../models/gridLocation";
 import GameBlocksGrid from "../models/gameBlocksGrid";
-import { MATRIX_SIZE } from "./gameConstants";
 
 /**
  * Checks whether the given grid locations are neighbours.
@@ -109,11 +108,13 @@ function switchBetweenCells(gameBlocksGrid: GameBlocksGrid, locationA: GridLocat
  * sets the proper value.
  */
 function validateGameBlockPositionAndCloneIfNeeded(gameBlocksGrid: GameBlocksGrid, gridLocation: GridLocation) {
+  const matrixSize = gameBlocksGrid.length;
+
   // Get a reference to the game block
   const gameBlock = gameBlocksGrid[gridLocation.row][gridLocation.col];
 
   // is the new location the proper location for the game block ?
-  const isInCorrectPosition = doesLocationFitsOrderIndex(gridLocation, gameBlock.blockOrderIndex);
+  const isInCorrectPosition = doesLocationFitsOrderIndex(gridLocation, gameBlock.blockOrderIndex, matrixSize);
 
   // If the game block 'correct position' value has changed, then we should clone it and set the proper value
   if (gameBlock.isInCorrectPosition !== isInCorrectPosition) {
@@ -128,7 +129,7 @@ function validateGameBlockPositionAndCloneIfNeeded(gameBlocksGrid: GameBlocksGri
 /**
  * Checks if the given grid location fits the given game block index
  */
-function doesLocationFitsOrderIndex(gridLocation: GridLocation, blockOrderIndex: number, colsPerRow = MATRIX_SIZE) : boolean {
+function doesLocationFitsOrderIndex(gridLocation: GridLocation, blockOrderIndex: number, colsPerRow: number) : boolean {
   return ((gridLocation.row * colsPerRow + gridLocation.col) === blockOrderIndex);
 }
 
