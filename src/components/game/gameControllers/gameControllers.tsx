@@ -7,15 +7,23 @@ type Props = {
   shuffleNewGame: (movesFromSolved : number) => void,
 }
 
+const GAME_RANDOMNESS_LEVELS = {
+  EASY: 10,
+  MEDIUM: 50,
+  HARD: 100,
+};
+
 const GameControllers : React.FC<Props> = (props) => {
   const {
     setToSolvedGame,
     shuffleNewGame,
   } = props;
 
-  const shuffleEasyGame = useCallback(() => shuffleNewGame(10), [shuffleNewGame]);
-  const shuffleMediumGame = useCallback(() => shuffleNewGame(20), [shuffleNewGame]);
-  const shuffleHardGame = useCallback(() => shuffleNewGame(50), [shuffleNewGame]);
+  const { EASY, MEDIUM, HARD } = GAME_RANDOMNESS_LEVELS;
+
+  const shuffleEasyGame = useCallback(() => shuffleNewGame(EASY), [shuffleNewGame, EASY]);
+  const shuffleMediumGame = useCallback(() => shuffleNewGame(MEDIUM), [shuffleNewGame, MEDIUM]);
+  const shuffleHardGame = useCallback(() => shuffleNewGame(HARD), [shuffleNewGame, HARD]);
 
   return (
     <div>
@@ -24,15 +32,15 @@ const GameControllers : React.FC<Props> = (props) => {
       </Button>
       {' '}
       <Button onClick={shuffleEasyGame}>
-        New Easy Game
+        New Easy Game ({EASY} moves)
       </Button>
       {' '}
       <Button onClick={shuffleMediumGame}>
-        New Medium Game
+        New Medium Game ({MEDIUM} moves)
       </Button>
       {' '}
       <Button onClick={shuffleHardGame}>
-        New Hard Game
+        New Hard Game ({HARD} moves)
       </Button>
     </div>
 );
