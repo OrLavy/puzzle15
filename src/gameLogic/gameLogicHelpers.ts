@@ -136,4 +136,6 @@ export {
   areBlocksNeighbours,
   switchBetweenBlocksInGrid,
   validateGameBlockPositionAndCloneIfNeeded,
+  switchBetweenCells,
+  doesLocationFitsOrderIndex,
 }

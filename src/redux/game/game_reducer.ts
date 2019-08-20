@@ -6,7 +6,11 @@ import { createReducer } from 'redux-starter-kit';
 
 import { GameState, defaultGameState } from './game_state';
 import * as gameActions from './game_actions';
-import {buildInitialSquareGameBoardState, performGameMoveIfValid} from "../../gameLogic/gameLogic";
+import {
+  buildInitialSquareGameBoardState,
+  buildShuffledGameBoardState,
+  performGameMoveIfValid
+} from "../../gameLogic/gameLogic";
 import {MATRIX_SIZE} from "../../gameLogic/gameConstants";
 
 type draftState = Draft<GameState>;
@@ -44,10 +48,10 @@ function setToSolvedPositionHandler(state: draftState, action: ReturnType<typeof
   // Important note:  We can 'directly mutate the state' (actually mutating a draft of the original state)
   //                  because we are using the 'immer' library.
 
-  // Sets the new game blocks grid
+  // Sets the initial game blocks grid
   state.gameBlocksGrid = initialGameBlocksGrid;
 
-  // If the move was valid, the empty block now sits in the location of the moved block
+  // Sets the initial empty block location
   state.emptyBlockLocation = initialEmptyBlockLocation;
 }
 
@@ -56,4 +60,15 @@ function shuffleNewGameHandler(state: draftState, action: ReturnType<typeof game
   const { movesFromStart } = action.payload;
 
   console.log(`Will shuffle new game with ${movesFromStart} moves`);
+
+  const { shuffledGmeBlocksGrid, emptyBlockLocation } = buildShuffledGameBoardState(MATRIX_SIZE, movesFromStart);
+
+  // Important note:  We can 'directly mutate the state' (actually mutating a draft of the original state)
+  //                  because we are using the 'immer' library.
+
+  // Sets shuffled game blocks grid
+  state.gameBlocksGrid = shuffledGmeBlocksGrid;
+
+  // Set the current location of the empty block
+  state.emptyBlockLocation = emptyBlockLocation;
 }

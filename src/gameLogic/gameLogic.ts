@@ -8,6 +8,7 @@ import {
   switchBetweenBlocksInGrid,
   validateGameBlockPositionAndCloneIfNeeded
 } from "./gameLogicHelpers";
+import {shuffleGameBoardByNumberOfSteps} from "./boardShuffeling";
 
 /**
  * A simple helper function to build the initial 'GameBlocksGrid' and 'empty block location' (defaults to be the last block)
@@ -75,7 +76,23 @@ function performGameMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockGridLoca
   }
 }
 
+/**
+ * Build a solved game state and randomly performs the given numbers of moves.
+ */
+function buildShuffledGameBoardState(gridSize: number, movesFromSolvedState : number) : { shuffledGmeBlocksGrid: GameBlocksGrid, emptyBlockLocation: GridLocation } {
+  // Build the initial game board state
+  const { initialGameBlocksGrid, initialEmptyBlockLocation } = buildInitialSquareGameBoardState(gridSize);
+
+  const { shuffledGmeBlocksGrid, emptyBlockLocation } = shuffleGameBoardByNumberOfSteps(initialGameBlocksGrid, initialEmptyBlockLocation, movesFromSolvedState);
+
+  return {
+    shuffledGmeBlocksGrid,
+    emptyBlockLocation,
+  };
+}
+
 export {
   buildInitialSquareGameBoardState,
   performGameMoveIfValid,
+  buildShuffledGameBoardState,
 }
