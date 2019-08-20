@@ -14,10 +14,11 @@ type draftState = Draft<GameState>;
 export const GameReducer = createReducer<GameState>(defaultGameState, {
   [getType(gameActions.performMoveIfValid)]: performMoveIfValidHandler,
   [getType(gameActions.setToSolvedPosition)]: setToSolvedPositionHandler,
+  [getType(gameActions.shuffleNewGame)]: shuffleNewGameHandler,
 });
 
 
-function performMoveIfValidHandler(state: draftState, action: ReturnType<typeof gameActions.performMoveIfValid>) {
+function performMoveIfValidHandler(state: draftState, action: ReturnType<typeof gameActions.performMoveIfValid>) : void {
   // Extract the block that we want to move from the payload
   const { blockToMoveGridLocation } = action.payload;
 
@@ -37,7 +38,7 @@ function performMoveIfValidHandler(state: draftState, action: ReturnType<typeof 
   }
 }
 
-function setToSolvedPositionHandler(state: draftState, action: ReturnType<typeof gameActions.performMoveIfValid>) {
+function setToSolvedPositionHandler(state: draftState, action: ReturnType<typeof gameActions.performMoveIfValid>) : void {
   const { initialGameBlocksGrid, initialEmptyBlockLocation } = buildInitialSquareGameBoardState(MATRIX_SIZE);
 
   // Important note:  We can 'directly mutate the state' (actually mutating a draft of the original state)
@@ -48,4 +49,11 @@ function setToSolvedPositionHandler(state: draftState, action: ReturnType<typeof
 
   // If the move was valid, the empty block now sits in the location of the moved block
   state.emptyBlockLocation = initialEmptyBlockLocation;
+}
+
+function shuffleNewGameHandler(state: draftState, action: ReturnType<typeof gameActions.shuffleNewGame>) : void {
+  // Extract the 'movesFromStart' from the payload
+  const { movesFromStart } = action.payload;
+
+  console.log(`Will shuffle new game with ${movesFromStart} moves`);
 }

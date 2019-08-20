@@ -12,7 +12,7 @@ import RootState from './store/root-state';
 
 import Game from './components/game/game';
 
-import { performMoveIfValid, setToSolvedPosition } from './redux/game/game_actions';
+import { performMoveIfValid, setToSolvedPosition, shuffleNewGame } from './redux/game/game_actions';
 import GridLocation from "./models/gridLocation";
 
 const mapStateToProps = (state: RootState) => {
@@ -24,20 +24,29 @@ const mapStateToProps = (state: RootState) => {
 const mapDispatchToProps = {
   performMoveIfValid: performMoveIfValid,
   returnToStartingPosition: setToSolvedPosition,
+  shuffleNewGame: shuffleNewGame,
 };
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 const App: React.FC<Props> = React.memo((props) => {
   const {
+    // Game data
     gameBlocksGrid,
+
+    // Redux Actions
     performMoveIfValid,
     returnToStartingPosition,
+    shuffleNewGame,
   } = props;
 
   const memoPerformMoveIfValid = useCallback((gridLocation: GridLocation) => {
     performMoveIfValid({ blockToMoveGridLocation: gridLocation });
   }, [performMoveIfValid]);
+
+  const memoShuffleNewGame = useCallback((movesFromStart: number) => {
+    shuffleNewGame({ movesFromStart });
+  }, [shuffleNewGame]);
 
   return (
     <Container>
@@ -47,6 +56,7 @@ const App: React.FC<Props> = React.memo((props) => {
             gameBlocksGrid={gameBlocksGrid}
             onGameBlockPressed={memoPerformMoveIfValid}
             setToSolvedGame={returnToStartingPosition}
+            shuffleNewGame={memoShuffleNewGame}
           />
         </Col>
       </Row>

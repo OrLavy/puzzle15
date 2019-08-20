@@ -14,6 +14,7 @@ type Props = {
 
   // Game controllers actions
   setToSolvedGame: () => void,
+  shuffleNewGame: (movesFromSolved : number) => void,
 }
 
 const Game : React.FC<Props> = (props) => {
@@ -26,12 +27,14 @@ const Game : React.FC<Props> = (props) => {
 
     // Game controllers actions
     setToSolvedGame,
+    shuffleNewGame,
   } = props;
 
   return (
     <div>
       <GameControllers
           setToSolvedGame={setToSolvedGame}
+          shuffleNewGame={shuffleNewGame}
       />
       <br/>
       <GameGrid gameBlocksGrid={gameBlocksGrid} onBlockPress={onGameBlockPressed} />
