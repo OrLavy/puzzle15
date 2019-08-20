@@ -11,38 +11,13 @@ import GameBlock, {cloneGameBlock} from "./models/gameBlock";
 import GridLocation from "./models/gridLocation";
 import GameBlocksGrid from "./models/gameBlocksGrid";
 
-const gameBlocksGridDemo: GameBlocksGrid = [
-  [
-    { blockOrderIndex: 0, blockValue: 1, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 1, blockValue: 2, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 2, blockValue: 3, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 3, blockValue: 4, isEmptyBLock: false, isInCorrectPosition: true },
-  ],
-  [
-    { blockOrderIndex: 4, blockValue: 5, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 5, blockValue: 6, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 6, blockValue: 7, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 7, blockValue: 8, isEmptyBLock: false, isInCorrectPosition: true },
-  ],
-  [
-    { blockOrderIndex: 8,  blockValue: 9,  isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 9, blockValue: 10, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 10, blockValue: 11, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 11, blockValue: 12, isEmptyBLock: false, isInCorrectPosition: true },
-  ],
-  [
-    { blockOrderIndex: 12, blockValue: 13, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 13, blockValue: 14, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 14, blockValue: 15, isEmptyBLock: false, isInCorrectPosition: true },
-    { blockOrderIndex: 15, blockValue: 16, isEmptyBLock: true,  isInCorrectPosition: true },
-  ],
-];
+const MATRIX_SIZE = 4;
 
-const initialEmptyBlockLocation : GridLocation = { col: 3, row: 3 };
+const { initialGameBlocksGrid, initialEmptyBlockLocation } = buildInitialSquareGameBoardState(MATRIX_SIZE);
 
 const App: React.FC = () => {
   const [emptyBlockLocation, setEmptyBlockLocation] = useState(initialEmptyBlockLocation);
-  const [gameBlocksGrid, setGameBlocksGrid] = useState(gameBlocksGridDemo);
+  const [gameBlocksGrid, setGameBlocksGrid] = useState(initialGameBlocksGrid);
 
   // Memoize the callback for pressing a "game block" (Will later be change into a proper redux action).
   const performMoveOnClick = useCallback((gameBlockToMove: GridLocation) => {
@@ -60,7 +35,7 @@ const App: React.FC = () => {
   return (
     <Container>
       <Row>
-        <Col md={{ offset: 4 }}>
+        <Col>
           <Game
             gameBlocksGrid={gameBlocksGrid}
             onGameBlockPressed={performMoveOnClick}
@@ -70,6 +45,53 @@ const App: React.FC = () => {
     </Container>
   );
 };
+
+/**
+ * A simple helper function to build the initial 'GameBlocksGrid' and 'empty block location' (defaults to be the last block)
+ * for a given matrix size.
+ */
+function buildInitialSquareGameBoardState(gridSize: number) : { initialGameBlocksGrid: GameBlocksGrid, initialEmptyBlockLocation: GridLocation } {
+  const initialGameBlocksGrid: GameBlocksGrid = [];
+  const initialEmptyBlockLocation : GridLocation = { col: gridSize - 1, row: gridSize - 1 };
+
+  for (let row = 0; row < gridSize; row++) {
+    // Initialize the row's array
+    initialGameBlocksGrid[row] = [];
+
+    const currentRow = initialGameBlocksGrid[row];
+
+    // Add the game blocks for the row
+    for (let col = 0; col < gridSize; col++) {
+      // Calculate the block's correct (zero-based) order index
+      const blockOrderIndex = row * gridSize + col;
+
+      // Build the game block
+      const gameBlock : GameBlock = {
+        blockOrderIndex,
+        isInCorrectPosition: true,
+        isEmptyBLock: false,
+        blockValue: blockOrderIndex + 1,
+      };
+
+      // Add the game block to the row
+      currentRow[col] = gameBlock;
+    }
+  }
+
+  // Override the last game block to be an empty game block
+  initialGameBlocksGrid[initialEmptyBlockLocation.row][initialEmptyBlockLocation.col] = {
+    // NOTE Can move the 'order index' calculation into a separate function
+    blockOrderIndex: initialEmptyBlockLocation.row * gridSize + initialEmptyBlockLocation.col,
+    blockValue: '',
+    isEmptyBLock: true,
+    isInCorrectPosition: true,
+  };
+
+  return {
+    initialGameBlocksGrid,
+    initialEmptyBlockLocation
+  };
+}
 
 /**
  * Performs the move on the given grid if it is valid.
@@ -213,7 +235,7 @@ function validateGameBlockPositionAndCloneIfNeeded(gameBlocksGrid: GameBlocksGri
 /**
  * Checks if the given grid location fits the given game block index
  */
-function doesLocationFitsOrderIndex(gridLocation: GridLocation, blockOrderIndex: number, colsPerRow = 4) : boolean {
+function doesLocationFitsOrderIndex(gridLocation: GridLocation, blockOrderIndex: number, colsPerRow = MATRIX_SIZE) : boolean {
   return ((gridLocation.row * colsPerRow + gridLocation.col) === blockOrderIndex);
 }
 
