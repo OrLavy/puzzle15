@@ -1,6 +1,6 @@
 type GridLocation = {
-  row: number,
-  col: number,
+  readonly row: number,
+  readonly col: number,
 }
 
 export default GridLocation;

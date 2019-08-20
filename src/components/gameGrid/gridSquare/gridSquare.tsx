@@ -54,7 +54,8 @@ const GridSquare : React.FC<Props> = (props) => {
 const styles = {
   button: {
     width: 100,
-    height: 100
+    height: 100,
+    border: '1px black solid',
   },
 };
 

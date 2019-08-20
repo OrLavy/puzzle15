@@ -10,6 +10,7 @@ const EmptyGridSquare : React.FC<Props> = () => {
     <Button
       variant="light"
       style={styles.button}
+      disabled
     >
     </Button>
   );
@@ -18,7 +19,8 @@ const EmptyGridSquare : React.FC<Props> = () => {
 const styles = {
   button: {
     width: 100,
-    height: 100
+    height: 100,
+    border: '1px black solid',
   },
 };
 

@@ -33,11 +33,11 @@ const GridRow : React.FC<GridRowProps> = (props) => {
     return blocks.map((gameBlock, colIndex) => ( gameBlock.isEmptyBLock ?
       <EmptyGridSquare
         // Key
-        key= {gameBlock.blockValue}
+        key= {gameBlock.blockOrderIndex}
       /> :
       <GridSquare
         // Key
-        key= {gameBlock.blockValue}
+        key= {gameBlock.blockOrderIndex}
 
         // Grid location
         rowIndex={rowIndex}

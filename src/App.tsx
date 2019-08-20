@@ -7,34 +7,34 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
 
 import Game from './components/game/game';
-import GameBlock from "./models/gameBlock";
+import GameBlock, {cloneGameBlock} from "./models/gameBlock";
 import GridLocation from "./models/gridLocation";
 import GameBlocksGrid from "./models/gameBlocksGrid";
 
 const gameBlocksGridDemo: GameBlocksGrid = [
   [
-    { blockId: 1, blockValue: 1, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 2, blockValue: 2, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 3, blockValue: 3, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 4, blockValue: 4, isEmptyBLock: false, isInCorrectPosition: false },
+    { blockOrderIndex: 0, blockValue: 1, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 1, blockValue: 2, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 2, blockValue: 3, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 3, blockValue: 4, isEmptyBLock: false, isInCorrectPosition: true },
   ],
   [
-    { blockId: 5, blockValue: 5, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 6, blockValue: 6, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 7, blockValue: 7, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 8, blockValue: 8, isEmptyBLock: false, isInCorrectPosition: false },
+    { blockOrderIndex: 4, blockValue: 5, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 5, blockValue: 6, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 6, blockValue: 7, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 7, blockValue: 8, isEmptyBLock: false, isInCorrectPosition: true },
   ],
   [
-    { blockId: 9,  blockValue: 9,  isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 10, blockValue: 10, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 11, blockValue: 11, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 12, blockValue: 12, isEmptyBLock: false, isInCorrectPosition: false },
+    { blockOrderIndex: 8,  blockValue: 9,  isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 9, blockValue: 10, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 10, blockValue: 11, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 11, blockValue: 12, isEmptyBLock: false, isInCorrectPosition: true },
   ],
   [
-    { blockId: 13, blockValue: 13, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 14, blockValue: 14, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 15, blockValue: 15, isEmptyBLock: false, isInCorrectPosition: false },
-    { blockId: 16, blockValue: 16, isEmptyBLock: true,  isInCorrectPosition: false },
+    { blockOrderIndex: 12, blockValue: 13, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 13, blockValue: 14, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 14, blockValue: 15, isEmptyBLock: false, isInCorrectPosition: true },
+    { blockOrderIndex: 15, blockValue: 16, isEmptyBLock: true,  isInCorrectPosition: true },
   ],
 ];
 
@@ -74,12 +74,15 @@ const App: React.FC = () => {
 /**
  * Performs the move on the given grid if it is valid.
  */
-function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockLocation: GridLocation, blockToMove: GridLocation) : GameBlocksGrid | null {
+function performMoveIfValid(gameBlockGrid: GameBlock[][], emptyBlockGridLocation: GridLocation, blockToMoveGridLocation: GridLocation) : GameBlocksGrid | null {
   // Ensure that the block can be moved
-  if (areBlocksNeighbours(emptyBlockLocation, blockToMove)) {
+  if (areBlocksNeighbours(emptyBlockGridLocation, blockToMoveGridLocation)) {
 
     // Calculates the game block grid after the blocks switch
-    const updatedGameBlockGrid = switchBetweenBlocksInGrid(gameBlockGrid, emptyBlockLocation, blockToMove);
+    const updatedGameBlockGrid = switchBetweenBlocksInGrid(gameBlockGrid, emptyBlockGridLocation, blockToMoveGridLocation);
+
+    // Update the moved cell if needed (the moved game block is now in the original 'emptyBlockLocation')
+    validateGameBlockPositionAndCloneIfNeeded(updatedGameBlockGrid, emptyBlockGridLocation);
 
     return updatedGameBlockGrid;
   } else {
@@ -184,6 +187,34 @@ function switchBetweenCells(gameBlocksGrid: GameBlocksGrid, locationA: GridLocat
   // Switch between the locations
   gameBlocksGrid[locationA.row][locationA.col] = celB;
   gameBlocksGrid[locationB.row][locationB.col] = celA;
+}
+
+/**
+ * Checks if there was a change in the 'isInCorrectPosition' value for the cell, and if so, clones it and
+ * sets the proper value.
+ */
+function validateGameBlockPositionAndCloneIfNeeded(gameBlocksGrid: GameBlocksGrid, gridLocation: GridLocation) {
+  // Get a reference to the game block
+  const gameBlock = gameBlocksGrid[gridLocation.row][gridLocation.col];
+
+  // is the new location the proper location for the game block ?
+  const isInCorrectPosition = doesLocationFitsOrderIndex(gridLocation, gameBlock.blockOrderIndex);
+
+  // If the game block 'correct position' value has changed, then we should clone it and set the proper value
+  if (gameBlock.isInCorrectPosition !== isInCorrectPosition) {
+    // Replace the game block in the given location with its clone
+    gameBlocksGrid[gridLocation.row][gridLocation.col] = cloneGameBlock(gameBlock);
+
+    // Set the 'isInCorrectPosition' value
+    gameBlocksGrid[gridLocation.row][gridLocation.col].isInCorrectPosition = isInCorrectPosition;
+  }
+}
+
+/**
+ * Checks if the given grid location fits the given game block index
+ */
+function doesLocationFitsOrderIndex(gridLocation: GridLocation, blockOrderIndex: number, colsPerRow = 4) : boolean {
+  return ((gridLocation.row * colsPerRow + gridLocation.col) === blockOrderIndex);
 }
 
 export default App;
